@@ -27,7 +27,7 @@
       ]
     },
     "codespaces": {
-      "openFiles": ["NOTES.md", "requests.http"]
+      "openFiles": ["EXERCISES.md", "requests.http"]
     }
   }
 }

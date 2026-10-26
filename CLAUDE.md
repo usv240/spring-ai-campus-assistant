@@ -27,6 +27,10 @@ For demos 4 and 5, temporarily set `logging.level.org.springframework.ai: DEBUG`
 
 Small local models are sometimes unreliable with tools and JSON. If a demo fails only because of the model's answer (not an exception), note it rather than rewriting the code.
 
+## Code-along exercises
+
+`EXERCISES.md` has one small change per demo that students make live in Codespaces. After the demos work, apply each exercise on a scratch copy or branch, check it works, then undo it, so `main` stays at the starting point students begin from. Report any exercise that fails.
+
 ## Local setup
 
 1. Java 21+ and Maven 3.9+ (check `java -version`, `mvn -v`).

@@ -23,6 +23,7 @@ public class AiConfig {
      * whichever model starter is on the classpath (Ollama here). Swap the
      * starter to OpenAI / Gemini / Anthropic and this code does not change.
      */
+    // EXERCISE 1: change the system prompt below and restart (see EXERCISES.md)
     @Bean
     ChatClient chatClient(ChatClient.Builder builder) {
         return builder

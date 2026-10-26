@@ -4,6 +4,7 @@ The code from my guest lecture **"Building AI-Powered Applications with Java and
 
 It's one small Spring Boot app that we built up step by step: chat, structured output, memory and tools, RAG, and a small agent.
 
+- **Code-along exercises:** [EXERCISES.md](EXERCISES.md), one small change after each demo
 - **Session notes:** [NOTES.md](NOTES.md), everything from the talk in plain words
 - **Playground:** [open the interactive page](https://YOUR-USERNAME.github.io/spring-ai-campus-assistant/), small toys for each idea, nothing to install
 - **Slides:** [slides.pdf](slides.pdf)

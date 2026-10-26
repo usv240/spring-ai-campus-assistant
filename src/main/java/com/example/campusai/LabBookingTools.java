@@ -46,4 +46,6 @@ public class LabBookingTools {
         System.out.println(">>> TOOL EXECUTED: booked " + lab + " at " + time + " for " + regNo);
         return "Booked " + lab + " at " + time + " for " + regNo + ". Confirmation id: LAB-" + Math.abs((lab + time + regNo).hashCode() % 10000);
     }
+
+    // EXERCISE 4: add your cancelBooking tool here (see EXERCISES.md)
 }
