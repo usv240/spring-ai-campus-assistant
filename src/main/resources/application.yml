@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: campus-assistant
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: llama3.2            # small (3B), runs on most laptops, supports tool calling
+        temperature: 0.3
+      embedding:
+        model: nomic-embed-text    # used for RAG
+      init:
+        pull-model-strategy: when_missing   # first run downloads the models (~2.3 GB total)
+        timeout: 10m
+
+logging:
+  level:
+    # Flip to DEBUG during the lecture to show prompts, tool calls and advisor flow
+    org.springframework.ai: INFO

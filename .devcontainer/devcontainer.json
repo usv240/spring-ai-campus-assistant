@@ -1,0 +1,33 @@
+{
+  "name": "Campus Assistant (Spring AI)",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true"
+    }
+  },
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "16gb"
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "bash .devcontainer/start-ollama.sh",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "Campus Assistant", "onAutoForward": "notify" },
+    "11434": { "label": "Ollama", "onAutoForward": "silent" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "humao.rest-client"
+      ]
+    },
+    "codespaces": {
+      "openFiles": ["NOTES.md", "requests.http"]
+    }
+  }
+}

@@ -1,0 +1,29 @@
+### Demo 1 - first AI endpoint
+GET http://localhost:8080/chat?message=Explain dependency injection in 3 lines
+
+### Demo 1 - streaming
+GET http://localhost:8080/chat/stream?message=Write a haiku about Java
+
+### Demo 1 - per-request system prompt
+GET http://localhost:8080/explain?topic=recursion&level=a 10 year old
+
+### Demo 2 - structured output
+GET http://localhost:8080/study-plan?subject=Data Structures&days=5
+
+### Demo 3 - memory + tools (turn 1)
+GET http://localhost:8080/assistant?user=21BCE1234&message=My reg no is 21BCE1234. Which AI Lab slots are free?
+
+### Demo 3 - memory + tools (turn 2: "the 2 PM one" only works because of memory)
+GET http://localhost:8080/assistant?user=21BCE1234&message=Book the 2 PM one for me
+
+### Demo 3 - a different user has no memory of the above
+GET http://localhost:8080/assistant?user=22BIT0042&message=What did I just book?
+
+### Demo 4 - without RAG
+GET http://localhost:8080/ask/no-rag?question=What is the minimum attendance to sit for the final exam?
+
+### Demo 4 - with RAG
+GET http://localhost:8080/ask?question=What is the minimum attendance to sit for the final exam?
+
+### Demo 4 - another grounded question
+GET http://localhost:8080/ask?question=How much does re-evaluation cost and is it refunded?

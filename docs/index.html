@@ -1,0 +1,587 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spring AI Playground</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one calm reading column; each section is a small hands-on toy, "your turn" moments in a warm second colour */
+:root {
+  --bg: #F6F7F2;
+  --surface: #FDFDFA;
+  --ink: #10231B;
+  --muted: #4E5E54;
+  --line: #DDE3D9;
+  --accent: #2F7A3A;
+  --accent-soft: #E3EEDD;
+  --turn: #A6461A;
+  --turn-soft: #F7E6DA;
+  --code-bg: #10231B;
+  --code-fg: #E6EDE4;
+  --code-dim: #8FA596;
+  --on-accent: #F6F7F2;
+  --good: #2F7A3A;
+  --bad: #B23A2B;
+  --font-body: 'IBM Plex Sans', 'Segoe UI', Arial, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Mono', Consolas, 'Courier New', monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0E1A14; --surface: #15251D; --ink: #E8EFE6; --muted: #A6B8AB; --line: #2A3D33;
+    --accent: #8BD17C; --accent-soft: #1E3A26; --turn: #F2A06B; --turn-soft: #3A2418;
+    --code-bg: #0A140F; --code-fg: #E6EDE4; --code-dim: #7F978A; --on-accent: #0E1A14;
+    --good: #8BD17C; --bad: #F08A7B; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0E1A14; --surface: #15251D; --ink: #E8EFE6; --muted: #A6B8AB; --line: #2A3D33;
+  --accent: #8BD17C; --accent-soft: #1E3A26; --turn: #F2A06B; --turn-soft: #3A2418;
+  --code-bg: #0A140F; --code-fg: #E6EDE4; --code-dim: #7F978A; --on-accent: #0E1A14;
+  --good: #8BD17C; --bad: #F08A7B; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { margin: 0;
+  background: var(--bg); color: var(--ink); font-family: var(--font-body);
+  font-size: 17px; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 64px;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+h1, h2, h3 { text-wrap: balance; line-height: 1.2; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+code, .mono { font-family: var(--font-mono); font-size: 0.92em; }
+
+header.intro { padding-top: 48px; display: flex; flex-direction: column; gap: 16px; }
+.eyebrow { font-size: 13px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); }
+header.intro h1 { font-size: clamp(34px, 6vw, 52px); font-weight: 700; }
+header.intro p { color: var(--muted); max-width: 62ch; font-size: 18px; }
+
+nav.toc { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-block: 12px; border-bottom: 1px solid var(--line); }
+nav.toc ul { list-style: none; margin: 0; padding: 0; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+nav.toc a { display: block; white-space: nowrap; text-decoration: none; color: var(--ink); font-size: 14px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+nav.toc a:hover { border-color: var(--accent); }
+
+section.toy { display: flex; flex-direction: column; gap: 20px; scroll-margin-top: 72px; }
+.toy-head { display: flex; flex-direction: column; gap: 8px; }
+.toy-head h2 { font-size: 28px; font-weight: 700; }
+.toy-head p { color: var(--muted); max-width: 64ch; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 24px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.note { font-size: 14px; color: var(--muted); }
+.turn { background: var(--turn-soft); border-radius: 10px; padding: 12px 16px; font-size: 15px; }
+.turn b { color: var(--turn); }
+
+button, select, input[type="text"], textarea { font: inherit; }
+.btn { border: 1px solid var(--accent); background: var(--accent); color: var(--on-accent); border-radius: 8px; padding: 8px 16px; font-size: 15px; font-weight: 600; cursor: pointer; }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, .chip:focus-visible, .opt:focus-visible, nav.toc a:focus-visible { outline: 3px solid var(--turn); outline-offset: 2px; }
+.row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+select, input[type="text"], textarea { background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+textarea { width: 100%; resize: vertical; min-height: 84px; }
+input[type="text"] { flex: 1 1 260px; min-width: 0; }
+label { font-size: 14px; font-weight: 600; }
+
+/* Next word */
+.sentence { font-family: var(--font-mono); font-size: clamp(18px, 3.4vw, 24px); }
+.sentence .blank { color: var(--turn); border-bottom: 2px dashed var(--turn); padding: 0 6px; }
+.bars { display: flex; flex-direction: column; gap: 8px; }
+.bar { display: grid; grid-template-columns: 110px 1fr 56px; gap: 12px; align-items: center; font-size: 15px; }
+.bar .track { height: 22px; background: var(--accent-soft); border-radius: 6px; overflow: hidden; }
+.bar .fill { height: 100%; background: var(--accent); border-radius: 6px; transition: width 0.25s ease; }
+.bar .pct { text-align: right; font-variant-numeric: tabular-nums; }
+.slider { display: flex; flex-direction: column; gap: 6px; }
+.slider input { width: 100%; accent-color: var(--accent); }
+.slider-scale { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); }
+.tally { display: flex; flex-wrap: wrap; gap: 6px; min-height: 32px; }
+.tally span { font-family: var(--font-mono); font-size: 13px; padding: 3px 8px; border-radius: 6px; background: var(--accent-soft); }
+
+/* Tokens */
+.tokens { display: flex; flex-wrap: wrap; gap: 4px; font-family: var(--font-mono); font-size: 15px; }
+.tokens span { padding: 2px 6px; border-radius: 5px; }
+.tokens span:nth-child(4n+1) { background: #D9EAD3; color: #10231B; }
+.tokens span:nth-child(4n+2) { background: #F7E0CF; color: #10231B; }
+.tokens span:nth-child(4n+3) { background: #D6E4F0; color: #10231B; }
+.tokens span:nth-child(4n) { background: #ECE3F3; color: #10231B; }
+.stats { display: flex; gap: 32px; flex-wrap: wrap; }
+.stat b { display: block; font-size: 28px; font-variant-numeric: tabular-nums; }
+.stat span { font-size: 14px; color: var(--muted); }
+
+/* Waiter */
+.actors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.actor { border: 1px solid var(--line); border-radius: 10px; padding: 10px; text-align: center; font-size: 14px; font-weight: 600; color: var(--muted); transition: background 0.2s, color 0.2s; }
+.actor small { display: block; font-weight: 400; font-size: 12px; }
+.actor.on { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.step-box { border-left: 4px solid var(--turn); padding: 4px 0 4px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.step-count { font-size: 13px; font-weight: 600; color: var(--turn); letter-spacing: 0.08em; text-transform: uppercase; }
+.step-box h3 { font-size: 20px; }
+pre.msg { margin: 0; background: var(--code-bg); color: var(--code-fg); border-radius: 10px; padding: 14px 16px; font-family: var(--font-mono); font-size: 14px; line-height: 1.55; overflow-x: auto; white-space: pre; }
+pre.msg .dim { color: var(--code-dim); }
+.check { display: flex; gap: 8px; align-items: center; font-size: 15px; }
+.check input { accent-color: var(--turn); width: 18px; height: 18px; }
+
+/* RAG */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 5px 12px; font-size: 14px; cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chunks { display: flex; flex-direction: column; gap: 8px; }
+.chunk { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; font-size: 15px; }
+.chunk.picked { border-color: var(--accent); background: var(--accent-soft); }
+.chunk h4 { margin: 0; font-size: 15px; }
+.chunk p { grid-column: 1 / -1; color: var(--muted); font-size: 14px; }
+.chunk .score { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; color: var(--muted); }
+.chunk.picked .score { color: var(--accent); }
+.chunk mark { background: var(--turn-soft); color: var(--ink); border-radius: 3px; padding: 0 2px; }
+.tabs { display: flex; gap: 4px; }
+.tabs button { border: 1px solid var(--line); background: var(--bg); color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
+.tabs button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+/* Quiz */
+.q { display: flex; flex-direction: column; gap: 10px; padding-bottom: 18px; border-bottom: 1px solid var(--line); }
+.q:last-of-type { border-bottom: none; padding-bottom: 0; }
+.q h3 { font-size: 17px; font-weight: 600; }
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opt { text-align: left; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 15px; }
+.opt:hover:not(:disabled) { border-color: var(--accent); }
+.opt.right { border-color: var(--good); background: var(--accent-soft); }
+.opt.wrong { border-color: var(--bad); }
+.opt:disabled { cursor: default; }
+.why { font-size: 14px; color: var(--muted); }
+.why b.ok { color: var(--good); }
+.why b.no { color: var(--bad); }
+.score-line { font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* Cheat sheet */
+.snip { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.snip-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.snip-head h3 { font-size: 16px; }
+.copy { font-size: 13px; padding: 4px 10px; }
+
+footer { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 20px; }
+
+@media (max-width: 560px) {
+  .actors { grid-template-columns: repeat(2, 1fr); }
+  .bar { grid-template-columns: 88px 1fr 48px; gap: 8px; font-size: 14px; }
+  .panel { padding: 18px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="intro">
+    <p class="eyebrow">VIT Vellore guest lecture · 28 October 2026</p>
+    <h1>Spring AI Playground</h1>
+    <p>I made this page to go with my session on building AI apps with Java and Spring AI. Each section below is a small toy that shows one idea from the talk. Nothing here calls a real AI model, so you can click around as much as you like.</p>
+    <p class="note">Ujwal Vanjare</p>
+  </header>
+
+  <nav class="toc" aria-label="Sections">
+    <ul>
+      <li><a href="#next-word">Next word</a></li>
+      <li><a href="#tokens">Tokens</a></li>
+      <li><a href="#tools">Waiter and kitchen</a></li>
+      <li><a href="#rag">Open-book exam</a></li>
+      <li><a href="#quiz">Quiz</a></li>
+      <li><a href="#cheatsheet">Cheat sheet</a></li>
+    </ul>
+  </nav>
+
+  <!-- 1. NEXT WORD -->
+  <section class="toy" id="next-word">
+    <div class="toy-head">
+      <p class="eyebrow">1 · How an LLM thinks</p>
+      <h2>Guess the next word</h2>
+      <p>An LLM looks at your text and gives every possible next word a chance. Temperature decides how adventurous it is when it picks one.</p>
+    </div>
+    <div class="panel">
+      <div class="row">
+        <label for="nw-prompt">Sentence</label>
+        <select id="nw-prompt"></select>
+      </div>
+      <p class="sentence" id="nw-sentence"></p>
+      <div class="bars" id="nw-bars" aria-live="polite"></div>
+      <div class="slider">
+        <label for="nw-temp">Temperature: <span id="nw-temp-val" class="mono">0.7</span></label>
+        <input type="range" id="nw-temp" min="0.1" max="2" step="0.1" value="0.7">
+        <div class="slider-scale"><span>0.1 · safe, predictable</span><span>2.0 · wild</span></div>
+      </div>
+      <div class="row">
+        <button class="btn" id="nw-run">Ask it 20 times</button>
+        <button class="btn ghost" id="nw-clear">Clear</button>
+      </div>
+      <div class="tally" id="nw-tally" aria-live="polite"></div>
+      <p class="turn"><b>Your turn:</b> set the temperature to 0.1 and ask 20 times. Then try 2.0. Which one would you use to generate JSON for your code?</p>
+      <p class="note">The chances here are made up to show the idea. A real model scores thousands of words.</p>
+    </div>
+  </section>
+
+  <!-- 2. TOKENS -->
+  <section class="toy" id="tokens">
+    <div class="toy-head">
+      <p class="eyebrow">2 · What you pay for</p>
+      <h2>Text gets cut into tokens</h2>
+      <p>Models don't read words, they read tokens: short pieces of text. Common words are one token, long or rare words get split. You pay for every token you send and every token you get back.</p>
+    </div>
+    <div class="panel">
+      <label for="tk-input">Type anything</label>
+      <textarea id="tk-input">Spring AI makes it surprisingly easy to build AI-powered applications in Java.</textarea>
+      <div class="tokens" id="tk-out" aria-live="polite"></div>
+      <div class="stats">
+        <div class="stat"><b id="tk-words">0</b><span>words</span></div>
+        <div class="stat"><b id="tk-count">0</b><span>tokens (rough)</span></div>
+      </div>
+      <p class="turn"><b>Your turn:</b> paste a paragraph from your notes. Then try the same sentence in another language you know. Does the count change?</p>
+      <p class="note">This is a simple approximation. Real tokenizers learn their pieces from data, so exact counts differ, but the rule of thumb holds: one token is about three quarters of a word in English.</p>
+    </div>
+  </section>
+
+  <!-- 3. TOOL CALLING -->
+  <section class="toy" id="tools">
+    <div class="toy-head">
+      <p class="eyebrow">3 · Tool calling</p>
+      <h2>The waiter and the kitchen</h2>
+      <p>The AI is the waiter. It takes your order and writes it down, but it never cooks. Your Java code is the kitchen. Step through what happens when you ask the Campus Assistant to book a lab.</p>
+    </div>
+    <div class="panel">
+      <div class="actors" aria-hidden="true">
+        <div class="actor" data-actor="you">You<small>the student</small></div>
+        <div class="actor" data-actor="spring">Spring AI<small>the app</small></div>
+        <div class="actor" data-actor="model">The model<small>the waiter</small></div>
+        <div class="actor" data-actor="code">Your Java code<small>the kitchen</small></div>
+      </div>
+      <div class="step-box" aria-live="polite">
+        <p class="step-count" id="tc-count"></p>
+        <h3 id="tc-title"></h3>
+        <p id="tc-text"></p>
+        <pre class="msg" id="tc-msg"></pre>
+      </div>
+      <div class="row">
+        <button class="btn ghost" id="tc-back">Back</button>
+        <button class="btn" id="tc-next">Next step</button>
+        <label class="check"><input type="checkbox" id="tc-taken"> What if the 2 PM slot is already taken?</label>
+      </div>
+      <p class="turn"><b>Your turn:</b> tick the box and step through again. Who decides that the booking failed: the model, or your code?</p>
+    </div>
+  </section>
+
+  <!-- 4. RAG -->
+  <section class="toy" id="rag">
+    <div class="toy-head">
+      <p class="eyebrow">4 · RAG</p>
+      <h2>An open-book exam for the AI</h2>
+      <p>The model has never read our college handbook. So before it answers, we find the pieces of the handbook that match the question and paste them into the prompt.</p>
+    </div>
+    <div class="panel">
+      <label for="rag-q">Ask about Northfield Institute (a made-up college)</label>
+      <div class="row">
+        <input type="text" id="rag-q" value="What is the minimum attendance to sit for the final exam?">
+        <button class="btn" id="rag-go">Search the handbook</button>
+      </div>
+      <div class="chips" id="rag-examples"></div>
+      <div class="chunks" id="rag-chunks" aria-live="polite"></div>
+      <div class="tabs" role="group" aria-label="Prompt view">
+        <button type="button" id="rag-with" aria-pressed="true">Prompt with RAG</button>
+        <button type="button" id="rag-without" aria-pressed="false">Prompt without RAG</button>
+      </div>
+      <pre class="msg" id="rag-prompt"></pre>
+      <p class="turn"><b>Your turn:</b> ask “Can I borrow a sensor kit for two weeks?” Which piece of the handbook comes out on top? Now ask something the handbook doesn’t cover, like the canteen menu.</p>
+      <p class="note">Real RAG compares meaning using embeddings, so “presence” would still match “attendance”. This toy matches words, with a few synonyms, so you can see how the ranking works.</p>
+    </div>
+  </section>
+
+  <!-- 5. QUIZ -->
+  <section class="toy" id="quiz">
+    <div class="toy-head">
+      <p class="eyebrow">5 · Check yourself</p>
+      <h2>Quick quiz</h2>
+      <p>Eight questions from the session. Pick an answer and you’ll see why right away.</p>
+    </div>
+    <div class="panel" id="quiz-panel">
+      <p class="score-line" id="quiz-score" aria-live="polite">0 of 8 answered</p>
+    </div>
+  </section>
+
+  <!-- 6. CHEAT SHEET -->
+  <section class="toy" id="cheatsheet">
+    <div class="toy-head">
+      <p class="eyebrow">6 · Take it with you</p>
+      <h2>Cheat sheet</h2>
+      <p>The code from the demos, cut down to the lines that matter. The full project has the rest.</p>
+    </div>
+    <div class="panel" id="snips"></div>
+  </section>
+
+  <footer>
+    <p>Want to go further? Start with the <a href="https://docs.spring.io/spring-ai/reference/" target="_blank" rel="noopener">Spring AI docs</a>, the free <a href="https://github.com/microsoft/Spring-AI-for-Beginners" target="_blank" rel="noopener">Spring AI for Beginners</a> course, and <a href="https://ollama.com" target="_blank" rel="noopener">Ollama</a> to run models on your own laptop. The demo code and session notes are in the <a href="https://github.com/YOUR-USERNAME/spring-ai-campus-assistant" target="_blank" rel="noopener">GitHub repo</a>. Questions after the session: <a href="https://www.linkedin.com/in/ujwalvanjare/" target="_blank" rel="noopener">find me on LinkedIn</a>.</p>
+  </footer>
+</div>
+
+<script>
+(function () {
+  // ---------- 1. Next word ----------
+  const prompts = [
+    { text: 'My favourite programming language is', words: [['Python', 2.0], ['Java', 1.75], ['JavaScript', 1.3], ['C++', 0.6], ['Rust', 0.35], ['Kotlin', 0.2]] },
+    { text: 'The capital of India is', words: [['New Delhi', 4.5], ['Delhi', 3.2], ['a', 0.9], ['located', 0.5], ['Mumbai', 0.2], ['huge', 0.1]] },
+    { text: 'After the exam, I went to the', words: [['canteen', 2.1], ['hostel', 1.9], ['library', 1.3], ['beach', 0.7], ['moon', -0.8], ['gym', 0.9]] }
+  ];
+  const sel = document.getElementById('nw-prompt');
+  prompts.forEach((p, i) => { const o = document.createElement('option'); o.value = i; o.textContent = p.text + ' …'; sel.appendChild(o); });
+  const temp = document.getElementById('nw-temp');
+  const tempVal = document.getElementById('nw-temp-val');
+  const bars = document.getElementById('nw-bars');
+  const tally = document.getElementById('nw-tally');
+
+  function probs() {
+    const p = prompts[sel.value];
+    const t = parseFloat(temp.value);
+    const ex = p.words.map(([, l]) => Math.exp(l / t));
+    const sum = ex.reduce((a, b) => a + b, 0);
+    return p.words.map(([w], i) => [w, ex[i] / sum]);
+  }
+  function drawBars() {
+    const p = prompts[sel.value];
+    document.getElementById('nw-sentence').innerHTML = escapeHtml(p.text) + ' <span class="blank">___</span>';
+    tempVal.textContent = parseFloat(temp.value).toFixed(1);
+    bars.innerHTML = '';
+    probs().forEach(([w, pr]) => {
+      const row = document.createElement('div');
+      row.className = 'bar';
+      row.innerHTML = '<span>' + escapeHtml(w) + '</span><div class="track"><div class="fill" style="width:' + (pr * 100).toFixed(1) + '%"></div></div><span class="pct">' + Math.round(pr * 100) + '%</span>';
+      bars.appendChild(row);
+    });
+  }
+  function sample() {
+    const ps = probs();
+    let r = Math.random(), acc = 0;
+    for (const [w, pr] of ps) { acc += pr; if (r <= acc) return w; }
+    return ps[ps.length - 1][0];
+  }
+  document.getElementById('nw-run').addEventListener('click', () => {
+    const counts = {};
+    for (let i = 0; i < 20; i++) { const w = sample(); counts[w] = (counts[w] || 0) + 1; }
+    tally.innerHTML = '<span>T=' + parseFloat(temp.value).toFixed(1) + '</span>' +
+      Object.entries(counts).sort((a, b) => b[1] - a[1]).map(([w, c]) => '<span>' + escapeHtml(w) + ' × ' + c + '</span>').join('');
+  });
+  document.getElementById('nw-clear').addEventListener('click', () => { tally.innerHTML = ''; });
+  temp.addEventListener('input', drawBars);
+  sel.addEventListener('change', () => { tally.innerHTML = ''; drawBars(); });
+  drawBars();
+
+  // ---------- 2. Tokens ----------
+  const tkIn = document.getElementById('tk-input');
+  const common = new Set(['the','a','an','to','in','it','is','of','and','for','on','with','as','at','by','be','are','was','this','that','you','i','my','we','our','java','spring','ai','build','make','makes','easy','code','app','apps','data','model','what','how','why','can','will','not','but','or','from','have','has','one','all','your','new','use','used','after','before','exam','book']);
+  function tokenize(text) {
+    const parts = text.match(/[A-Za-z]+|\d+|[^\sA-Za-z\d]/g) || [];
+    const out = [];
+    parts.forEach(p => {
+      if (/^\d+$/.test(p)) { for (let i = 0; i < p.length; i += 3) out.push(p.slice(i, i + 3)); return; }
+      if (!/^[A-Za-z]+$/.test(p) || p.length <= 5 || common.has(p.toLowerCase())) { out.push(p); return; }
+      let rest = p;
+      while (rest.length > 6) { out.push(rest.slice(0, 4)); rest = rest.slice(4); }
+      out.push(rest);
+    });
+    return out;
+  }
+  function drawTokens() {
+    const toks = tokenize(tkIn.value);
+    const box = document.getElementById('tk-out');
+    box.innerHTML = '';
+    toks.forEach(t => { const s = document.createElement('span'); s.textContent = t; box.appendChild(s); });
+    document.getElementById('tk-count').textContent = toks.length;
+    document.getElementById('tk-words').textContent = (tkIn.value.trim().match(/\S+/g) || []).length;
+  }
+  tkIn.addEventListener('input', drawTokens);
+  drawTokens();
+
+  // ---------- 3. Tool calling ----------
+  const stepsOk = [
+    { actor: 'you', title: 'You place the order', text: 'You type a normal sentence into the Campus Assistant.',
+      msg: 'Book the AI Lab at 2 PM for me.\nMy reg no is 21BCE1234.' },
+    { actor: 'spring', title: 'Spring AI shows the menu', text: 'Spring AI sends your message to the model, along with a short description of every tool it is allowed to ask for.',
+      msg: '<span class="dim">// message</span>\n"Book the AI Lab at 2 PM for me. My reg no is 21BCE1234."\n\n<span class="dim">// tools the model may ask for</span>\nlistFreeSlots(lab)          "List the free time slots for a lab"\nbookSlot(lab, time, regNo)  "Book a free slot in a lab for a student"' },
+    { actor: 'model', title: 'The waiter writes the order down', text: 'The model doesn’t reply to you yet. It replies to Spring AI with a request to call one of the tools, and fills in the details.',
+      msg: '<span class="dim">// the model asks for a tool call</span>\n{\n  "tool": "bookSlot",\n  "arguments": { "lab": "AI Lab", "time": "14:00", "regNo": "21BCE1234" }\n}' },
+    { actor: 'code', title: 'The kitchen cooks', text: 'Spring AI finds your @Tool method and runs it. This is plain Java: it can check the database, validate the time, or refuse.',
+      msg: '<span class="dim">// LabBookingTools.java runs</span>\nbookSlot("AI Lab", "14:00", "21BCE1234")\n\n<span class="dim">// returns</span>\n"Booked AI Lab at 14:00 for 21BCE1234. Confirmation id: LAB-4821"' },
+    { actor: 'model', title: 'The waiter brings the food', text: 'Spring AI sends the result back to the model, and now the model writes a friendly reply for you.',
+      msg: 'Done! I’ve booked the AI Lab for you at 2 PM today.\nYour confirmation id is LAB-4821.' }
+  ];
+  const stepsTaken = stepsOk.map(s => Object.assign({}, s));
+  stepsTaken[3] = { actor: 'code', title: 'The kitchen says no', text: 'Your Java code checks the slot, finds it is already booked, and returns a message saying so. The model can’t override this.',
+    msg: '<span class="dim">// LabBookingTools.java runs</span>\nbookSlot("AI Lab", "14:00", "21BCE1234")\n\n<span class="dim">// returns</span>\n"Slot 14:00 in AI Lab is not available."' };
+  stepsTaken[4] = { actor: 'model', title: 'The waiter comes back with options', text: 'The model reads the failure and may ask for another tool call, like listFreeSlots, before replying to you.',
+    msg: 'Sorry, the 2 PM slot in the AI Lab is already taken.\nThe free slots today are 9:00, 11:00 and 16:00.\nShould I book 4 PM instead?' };
+  let step = 0;
+  const taken = document.getElementById('tc-taken');
+  function drawStep() {
+    const steps = taken.checked ? stepsTaken : stepsOk;
+    const s = steps[step];
+    document.getElementById('tc-count').textContent = 'Step ' + (step + 1) + ' of ' + steps.length;
+    document.getElementById('tc-title').textContent = s.title;
+    document.getElementById('tc-text').textContent = s.text;
+    document.getElementById('tc-msg').innerHTML = s.msg;
+    document.querySelectorAll('.actor').forEach(a => a.classList.toggle('on', a.dataset.actor === s.actor));
+    document.getElementById('tc-back').disabled = step === 0;
+    document.getElementById('tc-next').textContent = step === steps.length - 1 ? 'Start again' : 'Next step';
+  }
+  document.getElementById('tc-next').addEventListener('click', () => {
+    step = step === stepsOk.length - 1 ? 0 : step + 1; drawStep();
+  });
+  document.getElementById('tc-back').addEventListener('click', () => { if (step > 0) { step--; drawStep(); } });
+  taken.addEventListener('change', () => { step = 0; drawStep(); });
+  drawStep();
+
+  // ---------- 4. RAG ----------
+  const handbook = [
+    { title: 'Attendance', text: 'Students must maintain a minimum of 82% attendance in each course to be eligible for the final assessment. Students between 75% and 82% may apply to the Dean of Academics for condonation with a medical certificate. Below 75%, the student must re-register for the course next semester.' },
+    { title: 'Grading', text: 'Continuous assessment carries 60% of the final grade: two quizzes, one mini project and a lab record. The final assessment carries 40%. A minimum of 40 out of 100 overall is required to pass.' },
+    { title: 'Re-evaluation', text: 'Students may request re-evaluation of the final assessment within 5 working days of results. The fee is 750 rupees per course and is refunded if the grade changes.' },
+    { title: 'Labs', text: 'Labs are open from 9 AM to 6 PM on weekdays. The AI Lab has 40 GPU workstations. The IoT Lab has sensor kits that can be borrowed for up to 7 days. Slots must be booked at least 2 hours in advance.' },
+    { title: 'Library', text: 'Students may borrow up to 6 books for 14 days. The late fee is 5 rupees per book per day. The digital library gives access to IEEE Xplore, ACM Digital Library and O’Reilly Learning.' },
+    { title: 'Hackathons and clubs', text: 'The Developer Club runs a 24-hour hackathon every semester. Teams have 2 to 4 members. Winning teams receive 2 extra credits, once per academic year.' },
+    { title: 'Internships', text: 'Students may take a full-semester internship in their final year if their CGPA is 7.5 or above and they have no pending backlogs. The faculty mentor must approve the offer letter.' }
+  ];
+  const examples = ['What is the minimum attendance to sit for the final exam?', 'How much does re-evaluation cost?', 'Can I borrow a sensor kit for two weeks?', 'Who can do a semester internship?', 'What do hackathon winners get?'];
+  const stop = new Set('a an the is are was were be to of in on for at by and or i my me we our you your it its this that what which who whom how much many can could do does did with from as if than then so not no any some there their they them have has had will would should may might must about into after before per get got sit'.split(' '));
+  const syn = { presence: 'attendance', present: 'attendance', attend: 'attendance', absent: 'attendance', bunk: 'attendance', cost: 'fee', costs: 'fee', price: 'fee', pay: 'fee', fees: 'fee', charge: 'fee', marks: 'grade', grades: 'grade', grading: 'grade', pass: 'grade', revaluation: 'evaluation', recheck: 'evaluation', kit: 'kits', borrow: 'borrowed', books: 'book', weeks: 'days', week: 'days', intern: 'internship', internships: 'internship', winners: 'winning', win: 'winning', won: 'winning', prize: 'credits', exam: 'assessment', exams: 'assessment', final: 'final' };
+  function terms(text) {
+    return (text.toLowerCase().replace(/re-evaluation/g, 're evaluation').match(/[a-z0-9]+/g) || [])
+      .filter(w => !stop.has(w) && w.length > 1)
+      .map(w => syn[w] || w)
+      .map(w => w.length > 4 && w.endsWith('s') && !w.endsWith('ss') ? w.slice(0, -1) : w);
+  }
+  const chunkTerms = handbook.map(c => new Set(terms(c.title + ' ' + c.text)));
+  let ragMode = 'with';
+  let lastQ = '';
+  let lastTop = [];
+  function highlight(text, qset) {
+    return escapeHtml(text).replace(/[A-Za-z0-9’']+/g, w => {
+      const t = terms(w)[0];
+      return t && qset.has(t) ? '<mark>' + w + '</mark>' : w;
+    });
+  }
+  function runRag() {
+    const q = document.getElementById('rag-q').value.trim();
+    lastQ = q;
+    const qset = new Set(terms(q));
+    const scored = handbook.map((c, i) => {
+      let s = 0; qset.forEach(t => { if (chunkTerms[i].has(t)) s++; });
+      return { c, i, s };
+    }).sort((a, b) => b.s - a.s || a.i - b.i);
+    lastTop = scored.filter(x => x.s > 0).slice(0, 2);
+    const box = document.getElementById('rag-chunks');
+    box.innerHTML = '';
+    scored.forEach(x => {
+      const picked = lastTop.includes(x);
+      const d = document.createElement('div');
+      d.className = 'chunk' + (picked ? ' picked' : '');
+      d.innerHTML = '<h4>' + escapeHtml(x.c.title) + '</h4><span class="score">' + (picked ? 'sent to model · ' : '') + x.s + ' matching word' + (x.s === 1 ? '' : 's') + '</span><p>' + highlight(x.c.text, qset) + '</p>';
+      box.appendChild(d);
+    });
+    drawPrompt();
+  }
+  function drawPrompt() {
+    const pre = document.getElementById('rag-prompt');
+    if (ragMode === 'without') {
+      pre.innerHTML = '<span class="dim">// the model only sees your question, so it has to guess</span>\nUSER: ' + escapeHtml(lastQ);
+      return;
+    }
+    if (!lastTop.length) {
+      pre.innerHTML = '<span class="dim">// nothing in the handbook matched, so no context is added.\n// A good system prompt tells the model to say "I don’t know" here.</span>\nUSER: ' + escapeHtml(lastQ);
+      return;
+    }
+    const ctx = lastTop.map(x => '[' + escapeHtml(x.c.title) + ']\n' + escapeHtml(x.c.text)).join('\n\n');
+    pre.innerHTML = '<span class="dim">// QuestionAnswerAdvisor adds the matching pieces for you</span>\nUSER: ' + escapeHtml(lastQ) + '\n\n<span class="dim">Use only the information below to answer.\n---------------------</span>\n' + ctx + '\n<span class="dim">---------------------</span>';
+  }
+  const exBox = document.getElementById('rag-examples');
+  examples.forEach(e => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'chip'; b.textContent = e;
+    b.addEventListener('click', () => { document.getElementById('rag-q').value = e; runRag(); });
+    exBox.appendChild(b);
+  });
+  document.getElementById('rag-go').addEventListener('click', runRag);
+  document.getElementById('rag-q').addEventListener('keydown', e => { if (e.key === 'Enter') runRag(); });
+  const wBtn = document.getElementById('rag-with'), woBtn = document.getElementById('rag-without');
+  function setMode(m) { ragMode = m; wBtn.setAttribute('aria-pressed', m === 'with'); woBtn.setAttribute('aria-pressed', m === 'without'); drawPrompt(); }
+  wBtn.addEventListener('click', () => setMode('with'));
+  woBtn.addEventListener('click', () => setMode('without'));
+  runRag();
+
+  // ---------- 5. Quiz ----------
+  const quiz = [
+    { q: 'At its core, what does an LLM do?', o: ['Searches the internet for the answer', 'Predicts the next token, over and over', 'Runs the code you send it'], a: 1, why: 'It predicts the most likely next piece of text, adds it, and repeats. Everything else is built on top of that.' },
+    { q: 'You need the model to return clean JSON for your code. Which temperature?', o: ['Low, around 0.1 to 0.3', 'High, around 1.5'], a: 0, why: 'Low temperature makes it stick to the most likely output, which is what you want for structured data.' },
+    { q: 'Why do we need chat memory at all?', o: ['The model is stateless and forgets every previous message', 'To make responses faster', 'Because models can only read one sentence'], a: 0, why: 'Each request starts from zero. The memory advisor sends recent messages along with every new question.' },
+    { q: 'In tool calling, who actually runs the bookSlot method?', o: ['The AI model', 'Your Spring Boot application', 'The user’s browser'], a: 1, why: 'The model only asks for the call. Your app runs the Java method, so your code stays in control.' },
+    { q: 'What does RAG stand for?', o: ['Random Answer Generator', 'Retrieval Augmented Generation', 'Rapid API Gateway'], a: 1, why: 'Retrieve the relevant documents, add them to the prompt, then generate the answer.' },
+    { q: 'What are embeddings?', o: ['Images inside a PDF', 'Lists of numbers that capture the meaning of text', 'Compressed copies of the model'], a: 1, why: 'Texts with similar meaning get similar numbers, so the vector store can find related pieces even when the words differ.' },
+    { q: 'To switch from Ollama to OpenAI in our app, what changes?', o: ['Every controller and service', 'The starter dependency and the config', 'You have to rewrite it in Python'], a: 1, why: 'Your code talks to ChatClient. The provider is just a dependency and a few properties.' },
+    { q: 'Where should your OpenAI API key live?', o: ['In application.yml, committed to GitHub', 'Hard-coded in a Java constant', 'In an environment variable or a secrets manager'], a: 2, why: 'Bots scan public repos for keys within minutes. Keep keys out of the code entirely.' }
+  ];
+  const qp = document.getElementById('quiz-panel');
+  const scoreEl = document.getElementById('quiz-score');
+  let answered = 0, correct = 0;
+  quiz.forEach((item, qi) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'q';
+    const h = document.createElement('h3'); h.textContent = (qi + 1) + '. ' + item.q; wrap.appendChild(h);
+    const opts = document.createElement('div'); opts.className = 'opts';
+    const why = document.createElement('p'); why.className = 'why'; why.hidden = true;
+    item.o.forEach((text, oi) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'opt'; b.textContent = text;
+      b.addEventListener('click', () => {
+        opts.querySelectorAll('button').forEach((x, xi) => { x.disabled = true; if (xi === item.a) x.classList.add('right'); });
+        const ok = oi === item.a;
+        if (!ok) b.classList.add('wrong');
+        answered++; if (ok) correct++;
+        why.innerHTML = (ok ? '<b class="ok">Right.</b> ' : '<b class="no">Not quite.</b> ') + escapeHtml(item.why);
+        why.hidden = false;
+        scoreEl.textContent = answered === quiz.length ? 'You got ' + correct + ' of ' + quiz.length + '. ' + (correct >= 6 ? 'Nice work!' : 'Scroll up and try the toys again.') : correct + ' correct, ' + answered + ' of ' + quiz.length + ' answered';
+      });
+      opts.appendChild(b);
+    });
+    wrap.appendChild(opts); wrap.appendChild(why);
+    qp.insertBefore(wrap, scoreEl);
+  });
+
+  // ---------- 6. Cheat sheet ----------
+  const snippets = [
+    ['Talk to the model', 'String reply = chatClient.prompt()\n        .user("Explain recursion in 3 lines")\n        .call()\n        .content();'],
+    ['Stream the reply word by word', 'Flux<String> stream = chatClient.prompt()\n        .user(message)\n        .stream()\n        .content();'],
+    ['Get a Java object back', 'record StudyPlan(String subject, List<String> tips) {}\n\nStudyPlan plan = chatClient.prompt()\n        .user("Make a 5-day plan for Data Structures")\n        .call()\n        .entity(StudyPlan.class);'],
+    ['Give it a tool', '@Tool(description = "Book a free slot in a lab for a student")\npublic String bookSlot(String lab, String time, String regNo) { ... }\n\nchatClient.prompt()\n        .user(message)\n        .tools(labTools)\n        .call()\n        .content();'],
+    ['Remember each user', 'ChatClient withMemory = chatClient.mutate()\n        .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())\n        .build();\n\nwithMemory.prompt()\n        .user(message)\n        .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, userId))\n        .call()\n        .content();'],
+    ['Answer from your documents (RAG)', 'vectorStore.add(new TokenTextSplitter().apply(new TextReader(handbook).get()));\n\nchatClient.prompt()\n        .advisors(QuestionAnswerAdvisor.builder(vectorStore).build())\n        .user(question)\n        .call()\n        .content();'],
+    ['application.yml for Ollama', 'spring:\n  ai:\n    ollama:\n      chat:\n        model: llama3.2\n      embedding:\n        model: nomic-embed-text']
+  ];
+  const sbox = document.getElementById('snips');
+  snippets.forEach(([title, code]) => {
+    const d = document.createElement('div'); d.className = 'snip';
+    const head = document.createElement('div'); head.className = 'snip-head';
+    const h = document.createElement('h3'); h.textContent = title;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ghost copy'; b.textContent = 'Copy';
+    const pre = document.createElement('pre'); pre.className = 'msg'; pre.textContent = code;
+    b.addEventListener('click', () => {
+      const done = () => { b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1500); };
+      const fallback = () => { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selected, press Ctrl+C'; setTimeout(() => { b.textContent = 'Copy'; }, 2500); };
+      try { navigator.clipboard.writeText(code).then(done, fallback); } catch (e) { fallback(); }
+    });
+    head.appendChild(h); head.appendChild(b);
+    d.appendChild(head); d.appendChild(pre);
+    sbox.appendChild(d);
+  });
+
+  function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+})();
+</script>
+
+</body>
+</html>
