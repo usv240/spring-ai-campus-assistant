@@ -27,3 +27,12 @@ GET http://localhost:8080/ask?question=What is the minimum attendance to sit for
 
 ### Demo 4 - another grounded question
 GET http://localhost:8080/ask?question=How much does re-evaluation cost and is it refunded?
+
+### Prompting - vague
+GET http://localhost:8080/chat?message=Write about Java streams.
+
+### Prompting - clear
+GET http://localhost:8080/chat?message=You are helping second-year students prepare for a viva. Explain Java streams in 5 short bullet points, with one 3-line code example. If you are not sure about something, say so.
+
+### Demo 5 - a small agent: one goal, the model plans the tool calls itself
+GET http://localhost:8080/assistant?user=21BCE1234&message=Book me the earliest free slot from 1 PM onwards, in any lab. My reg no is 21BCE1234.

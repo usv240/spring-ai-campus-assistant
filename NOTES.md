@@ -64,11 +64,22 @@ StudyPlan plan = chatClient.prompt()
 
 Spring AI tells the model the shape of the record and reads the reply back into Java for you.
 
-## 7. Demo 3: memory
+## 7. Writing good prompts
+
+Talk to it like a new teammate, not a search box. A vague prompt like "Write about Java streams" gets a vague answer. A clear one says four things:
+
+- **Who** it's talking to: "You're helping second-year students prepare for a viva."
+- **What** you want, exactly: "Explain Java streams."
+- **Format** of the answer: "In 5 short bullet points, with one 3-line code example."
+- **What to do when unsure:** "If you're not sure about something, say so."
+
+Showing one example of the output you want usually works better than describing it.
+
+## 8. Demo 3: memory
 
 The model forgets everything between messages. It's like calling customer care and explaining your problem from the start every single time. The memory advisor keeps the last few messages for each user (by a conversation id) and sends them along with every new question.
 
-## 8. Demo 3: tool calling, the waiter and the kitchen
+## 9. Demo 3: tool calling, the waiter and the kitchen
 
 1. You place an order: "Book the AI Lab at 2 PM."
 2. The waiter (the model) writes it down: `bookSlot("AI Lab", "14:00", ...)`.
@@ -79,7 +90,7 @@ The model never goes into the kitchen. It only asks. Your code decides what real
 
 This is the idea that turns a chatbot into an agent.
 
-## 9. Demo 4: RAG, an open-book exam for the AI
+## 10. Demo 4: RAG, an open-book exam for the AI
 
 Instead of hoping the model already knows the answer, we hand it the right page just before it answers.
 
@@ -91,19 +102,24 @@ In Spring AI that's one advisor: `QuestionAnswerAdvisor`.
 
 Why not paste the whole handbook into every prompt? Real documents are huge, and you pay per token.
 
-## 10. MCP: one plug for AI tools
+## 11. Demo 5: a small agent
+
+Same code as Demo 3, just a bigger ask. Instead of telling it each step, give it a goal: "Book me the earliest free slot from 1 PM onwards, in any lab." The model decides by itself to check each lab's free slots, compare them, and then book one. A goal, some tools and a loop: that's an agent. Spring AI also limits how many tool calls one request can make, so it can't loop forever.
+
+## 12. MCP: one plug for AI tools
 
 Remember when every phone had a different charger, and then USB-C came along? MCP (Model Context Protocol) is that for AI tools. You write a tool once, and Claude Desktop, coding assistants and your own apps can all use it. In Spring AI you mark a method with `@McpTool`.
 
-## 11. Before anything goes live
+## 13. Before anything goes live
 
 - **API keys:** never in the code or on GitHub. Use environment variables.
 - **Tricky inputs:** users and documents can try to give the AI new instructions. Keep important checks in Java code.
 - **Cost:** every token costs money. Use the smallest model that works.
 - **Testing:** the same question can give different answers. Test with real examples.
 - **Privacy:** know what data you're sending outside your company.
+- **Watching it:** Spring AI can log every prompt and tool call, and send metrics you can chart. That's what you check when someone says "the bot did something weird".
 
-## 12. If I were in your place
+## 14. If I were in your place
 
 - Get really good at Java and Spring Boot first.
 - Build one AI project end to end and put it online with a short demo video.
