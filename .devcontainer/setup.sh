@@ -3,7 +3,10 @@
 set -e
 
 echo ">>> Installing Ollama (runs AI models inside this Codespace)"
-sudo apt-get update -qq && sudo apt-get install -y -qq zstd > /dev/null
+# apt-get update can exit with an error on a broken third-party repo key (Yarn) even though
+# zstd installs fine, so don't let that stop the setup.
+sudo apt-get update -qq || true
+sudo apt-get install -y -qq zstd > /dev/null
 curl -fsSL https://ollama.com/install.sh | sh
 
 echo ">>> Starting Ollama"
