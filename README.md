@@ -6,12 +6,12 @@ It's one small Spring Boot app that we built up step by step: chat, structured o
 
 - **Code-along exercises:** [EXERCISES.md](EXERCISES.md), one small change after each demo
 - **Session notes:** [NOTES.md](NOTES.md), everything from the talk in plain words
-- **Playground:** [open the interactive page](https://YOUR-USERNAME.github.io/spring-ai-campus-assistant/), small toys for each idea, nothing to install
+- **Playground:** [open the interactive page](https://usv240.github.io/spring-ai-campus-assistant/), small toys for each idea, nothing to install
 - **Slides:** [slides.pdf](slides.pdf)
 
 ## Run it in your browser (nothing to install)
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/YOUR-USERNAME/spring-ai-campus-assistant)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/usv240/spring-ai-campus-assistant)
 
 1. Sign in to GitHub (a free account is enough) and click the button above.
 2. Wait about 5 minutes the first time. It installs Java, Maven and Ollama and downloads the AI model for you. You'll see the progress in the terminal.
