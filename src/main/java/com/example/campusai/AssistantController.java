@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * DEMO 3 - Memory + tools = a small agent.
- * LLMs are stateless; the memory advisor replays recent messages per conversation id.
- * Tools let the model take actions (check and book lab slots).
+ * DEMO 3 - Memory and tools.
+ * An AI model forgets everything between messages, so the memory advisor re-sends
+ * the recent conversation each time (one conversation per student).
+ * Tools are Java methods the AI can ask us to run, like checking and booking lab slots.
  */
 @RestController
 public class AssistantController {
@@ -20,6 +21,7 @@ public class AssistantController {
 
     public AssistantController(ChatClient chatClient, ChatMemory chatMemory, LabBookingTools labTools) {
         this.labTools = labTools;
+        // Start from the shared ChatClient, then add our own instructions and memory
         this.chatClient = chatClient.mutate()
                 .defaultSystem("""
                         You are Campus Assistant. You can book lab slots.
@@ -28,17 +30,21 @@ public class AssistantController {
                         Only say a slot is booked if bookSlot returned a confirmation id.
                         If bookSlot returned an error, say the booking failed and offer the free slots.
                         """)
+                // The memory advisor remembers earlier messages from the same student
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
 
-    // GET /assistant?user=21BCE1234&message=My reg no is 21BCE1234. Which AI Lab slots are free?
-    // GET /assistant?user=21BCE1234&message=Book the 2 PM one for me
+    // Chat with the assistant. The "user" value tells us whose memory to use.
+    // Try: GET /assistant?user=21BCE1234&message=My reg no is 21BCE1234. Which AI Lab slots are free?
+    // Then: GET /assistant?user=21BCE1234&message=Book the 2 PM one for me
     @GetMapping("/assistant")
     public String assistant(@RequestParam String user, @RequestParam String message) {
         return chatClient.prompt()
                 .user(message)
+                // Tell the AI which Java methods (tools) it may use
                 .tools(labTools)
+                // Use this student's own conversation as memory
                 .advisors(a -> a.param(ChatMemory.CONVERSATION_ID, user))
                 .call()
                 .content();

@@ -29,7 +29,9 @@ Small local models are sometimes unreliable with tools and JSON. If a demo fails
 
 ## Code-along exercises
 
-`EXERCISES.md` has four small changes (after Demos 1 to 4) that students make live in Codespaces, plus a bonus goal for later. After the demos work, apply each exercise on a scratch copy or branch, check it works, then undo it, so `main` stays at the starting point students begin from. Report any exercise that fails.
+`EXERCISES.md` has four small changes: Part A (Exercises 1 and 2) is done live in Codespaces, Part B (3 and 4) is for later, plus a bonus goal. `SOLUTIONS.md` has the finished code. Code carries markers `// EXERCISE n START HERE` (and an HTML comment at the end of `course-handbook.md`); do not remove or rename them. After the demos work, apply each exercise on a scratch copy or branch exactly as written in `EXERCISES.md`, check it works, then undo it, so `main` stays at the starting point students begin from. Report any exercise that fails.
+
+The audience may have little CS background: keep code comments plain English and explain any technical word the first time it appears in the docs.
 
 ## Local setup
 

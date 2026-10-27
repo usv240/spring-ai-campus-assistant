@@ -40,3 +40,5 @@ category, once per academic year.
 Students may take a full-semester internship in their final year if their CGPA is
 7.5 or above and they have no pending backlogs. The faculty mentor must approve
 the internship offer letter before the student joins.
+
+<!-- EXERCISE 4: add your new section below this line -->

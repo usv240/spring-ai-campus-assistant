@@ -2,12 +2,25 @@
 
 The code from my guest lecture **"Building AI-Powered Applications with Java and Spring AI"** at VIT Vellore (SCORE), 28 October 2026.
 
-It's one small Spring Boot app that we built up step by step: chat, structured output, memory and tools, and RAG. A small agent is there as a bonus.
+## Start here
 
-- **Code-along exercises:** [EXERCISES.md](EXERCISES.md), one small change after each demo
-- **Session notes:** [NOTES.md](NOTES.md), everything from the talk in plain words
-- **Playground:** [open the interactive page](https://usv240.github.io/spring-ai-campus-assistant/), small toys for each idea, nothing to install
-- **Slides:** [slides.pdf](slides.pdf)
+1. Click this button: [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/usv240/spring-ai-campus-assistant) (sign in to GitHub, a free account is enough)
+2. Wait about 5 minutes, until the terminal at the bottom says **All set**
+3. Open **[EXERCISES.md](EXERCISES.md)** and follow "Before you start"
+
+## Links
+
+- **[EXERCISES.md](EXERCISES.md):** four small changes to the app, step by step
+- **[SOLUTIONS.md](SOLUTIONS.md):** the finished code for each exercise
+- **[NOTES.md](NOTES.md):** everything from the talk in plain words, with a glossary
+- **[Playground](https://usv240.github.io/spring-ai-campus-assistant/):** small interactive toys for each idea, nothing to install
+- **[slides.pdf](slides.pdf):** the slides
+
+---
+
+*Everything below is more detail: how the Codespace works, running on your own laptop, and the demos.*
+
+It's one small Spring Boot app that we built up step by step: chat, structured output, memory and tools, and RAG. A small agent is there as a bonus.
 
 ## Run it in your browser (nothing to install)
 

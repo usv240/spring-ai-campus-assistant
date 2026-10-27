@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * DEMO 4 - Retrieval Augmented Generation (RAG).
- * The model has never seen our course handbook. The advisor finds the most
- * relevant chunks in the vector store and adds them to the prompt.
+ * DEMO 4 - RAG (Retrieval Augmented Generation), which means answering from your own documents.
+ * The AI has never seen our course handbook. So before it answers, we find the
+ * handbook pieces closest to the question and add them to the prompt, like an open-book exam.
  */
 @RestController
 public class RagController {
@@ -24,18 +24,19 @@ public class RagController {
         this.vectorStore = vectorStore;
     }
 
-    // Without RAG: the model guesses (or admits it does not know).
-    // GET /ask/no-rag?question=What is the minimum attendance to sit for the final exam?
+    // Without RAG: the AI has no handbook, so it guesses or says it does not know.
+    // Try: GET /ask/no-rag?question=What is the minimum attendance to sit for the final exam?
     @GetMapping("/ask/no-rag")
     public String askWithoutRag(@RequestParam String question) {
         return chatClient.prompt().user(question).call().content();
     }
 
-    // With RAG: grounded answer from the handbook.
-    // GET /ask?question=What is the minimum attendance to sit for the final exam?
+    // With RAG: the answer comes from the handbook.
+    // Try: GET /ask?question=What is the minimum attendance to sit for the final exam?
     @GetMapping("/ask")
     public String ask(@RequestParam String question) {
         return chatClient.prompt()
+                // The advisor looks up the 4 handbook pieces closest to the question and adds them to the prompt
                 .advisors(QuestionAnswerAdvisor.builder(vectorStore)
                         .searchRequest(SearchRequest.builder().topK(4).build())
                         .build())

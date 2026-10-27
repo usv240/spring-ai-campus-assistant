@@ -1,41 +1,109 @@
-### Demo 1 - first AI endpoint
+# HOW TO USE: click "Send Request" above any line that starts with GET.
+# The answer opens in a new tab on the right. The app must be running (mvn spring-boot:run).
+# Each request has a ### title and a one-line note saying what it does.
+
+
+################ DEMO 1: CHAT ################
+
+### Demo 1: chat - ask the AI a question
+# Sends your message to the AI and shows its full reply.
 GET http://localhost:8080/chat?message=Explain dependency injection in 3 lines
 
-### Demo 1 - streaming
+### Demo 1: chat - streaming
+# Same idea, but the reply appears word by word, like ChatGPT typing.
 GET http://localhost:8080/chat/stream?message=Write a haiku about Java
 
-### Demo 1 - per-request system prompt
+### Demo 1: chat - change the audience
+# Same AI, different instructions: it explains recursion to a 10 year old.
 GET http://localhost:8080/explain?topic=recursion&level=a 10 year old
 
-### Demo 2 - structured output
+
+################ EXERCISE 1: CHECK YOUR PERSONALITY ################
+
+### Exercise 1: check your personality
+# After you change defaultSystem in AiConfig.java and restart, send this. The answer should sound like your personality.
+GET http://localhost:8080/chat?message=Explain dependency injection in 3 lines
+
+
+################ DEMO 2: STRUCTURED ANSWERS ################
+
+### Demo 2: study plan
+# Asks for a 5-day plan and gets it back as neat data (JSON) instead of plain text.
 GET http://localhost:8080/study-plan?subject=Data Structures&days=5
 
-### Demo 3 - memory + tools (turn 1)
+
+################ EXERCISE 2: CHECK YOUR NEW FIELD ################
+
+### Exercise 2: check the difficulty field
+# After you add the difficulty field and restart, every task in the plan should have a "difficulty".
+GET http://localhost:8080/study-plan?subject=Data Structures&days=5
+
+
+################ DEMO 3: MEMORY AND TOOLS ################
+
+### Demo 3: memory and tools (message 1)
+# Tells the AI who you are and asks for free AI Lab slots. It uses the listFreeSlots tool.
 GET http://localhost:8080/assistant?user=21BCE1234&message=My reg no is 21BCE1234. Which AI Lab slots are free?
 
-### Demo 3 - memory + tools (turn 2: "the 2 PM one" only works because of memory)
+### Demo 3: memory and tools (message 2)
+# "The 2 PM one" only makes sense because the AI remembers message 1. It books with the bookSlot tool.
 GET http://localhost:8080/assistant?user=21BCE1234&message=Book the 2 PM one for me
 
-### Demo 3 - a different user has no memory of the above
+### Demo 3: a different student
+# A different user id has its own memory, so the AI has no idea what was booked above.
 GET http://localhost:8080/assistant?user=22BIT0042&message=What did I just book?
 
-### Demo 4 - without RAG
+
+################ EXERCISE 3: CHECK YOUR CANCEL TOOL ################
+
+### Exercise 3: cancel the booking
+# After you add cancelBooking and restart, do the two Demo 3 requests first (to book 14:00), then send this.
+GET http://localhost:8080/assistant?user=21BCE1234&message=Actually, cancel that booking.
+
+
+################ DEMO 4: ANSWERING FROM DOCUMENTS (RAG) ################
+
+### Demo 4: without the handbook
+# The AI has never seen our handbook, so it guesses or says it does not know.
 GET http://localhost:8080/ask/no-rag?question=What is the minimum attendance to sit for the final exam?
 
-### Demo 4 - with RAG
+### Demo 4: with the handbook
+# The app finds the right handbook piece first, so the AI answers correctly (82%).
 GET http://localhost:8080/ask?question=What is the minimum attendance to sit for the final exam?
 
-### Demo 4 - another grounded question
+### Demo 4: another handbook question
+# Another question the handbook can answer (re-evaluation fee).
 GET http://localhost:8080/ask?question=How much does re-evaluation cost and is it refunded?
 
-### Prompting (short talk, no exercise) - vague
+
+################ EXERCISE 4: CHECK YOUR NEW SECTION ################
+
+### Exercise 4: ask about the canteen (with the handbook)
+# After you add the Canteen section and restart, the AI should answer from it (open until 2 AM).
+GET http://localhost:8080/ask?question=Until when is the canteen open during exams?
+
+### Exercise 4: ask about the canteen (without the handbook)
+# Same question without the handbook, to compare. The AI can only guess.
+GET http://localhost:8080/ask/no-rag?question=Until when is the canteen open during exams?
+
+
+################ TALK: WRITING GOOD PROMPTS (no exercise) ################
+
+### Prompting: a vague prompt
+# A vague request gets a vague answer.
 GET http://localhost:8080/chat?message=Write about Java streams.
 
-### Prompting (short talk, no exercise) - clear
+### Prompting: a clear prompt
+# A clear request (who, what, format, what to do when unsure) gets a much better answer.
 GET http://localhost:8080/chat?message=You are helping second-year students prepare for a viva. Explain Java streams in 5 short bullet points, with one 3-line code example. If you are not sure about something, say so.
 
-### Bonus (not in the live session) - a small agent: one goal, the model plans the tool calls itself
+
+################ BONUS: A SMALL AGENT (not in the live session) ################
+
+### Bonus: give the AI a goal
+# One goal, no steps. The AI decides to check free slots and then book one. Watch the terminal for TOOL EXECUTED.
 GET http://localhost:8080/assistant?user=21BCE1234&message=Find me a free slot in the Cloud Lab after lunch and book it. My reg no is 21BCE1234.
 
-### Bonus - same goal on the agent instance (qwen2.5:7b, port 8081, see application-agent.yml)
+### Bonus: same goal on a bigger model (port 8081)
+# Only works if you started the app with the agent profile (see application-agent.yml).
 GET http://localhost:8081/assistant?user=21BCE1234&message=Find me a free slot in the Cloud Lab after lunch and book it. My reg no is 21BCE1234.
