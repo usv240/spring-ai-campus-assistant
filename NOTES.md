@@ -102,9 +102,9 @@ In Spring AI that's one advisor: `QuestionAnswerAdvisor`.
 
 Why not paste the whole handbook into every prompt? Real documents are huge, and you pay per token.
 
-## 11. Demo 5: a small agent
+## 11. Bonus: a small agent (not covered live, try it later)
 
-Same code as Demo 3, just a bigger ask. Instead of telling it each step, give it a goal: "Book me the earliest free slot from 1 PM onwards, in any lab." The model decides by itself to check each lab's free slots, compare them, and then book one. A goal, some tools and a loop: that's an agent. Spring AI also limits how many tool calls one request can make, so it can't loop forever.
+Same code as Demo 3, just a bigger ask. Instead of telling it each step, give it a goal: "Find me a free slot in the Cloud Lab after lunch and book it." The model decides by itself to check the lab's free slots, pick one, and then book it. A goal, some tools and a loop: that's an agent. Spring AI also limits how many tool calls one request can make, so it can't loop forever.
 
 ## 12. MCP: one plug for AI tools
 

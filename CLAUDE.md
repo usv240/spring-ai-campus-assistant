@@ -18,10 +18,10 @@ Run each request in `requests.http` with the app running.
 |---|---|---|
 | 1 | `/chat`, `/chat/stream`, `/explain` | Text comes back; `/chat/stream` arrives in pieces; `/explain` changes with `level` |
 | 2 | `/study-plan` | JSON matching the `StudyPlan` record (retry once if a small model returns bad JSON) |
-| Prompting | the two `/chat` prompt requests | Both answer; the clear one follows the format asked |
+| Prompting (short talk, no exercise) | the two `/chat` prompt requests | Both answer; the clear one follows the format asked |
 | 3 | `/assistant`, two turns, same `user` | Turn 2 books 14:00 in AI Lab and the console prints `>>> TOOL EXECUTED` |
 | 4 | `/ask/no-rag`, `/ask` | `/ask` mentions 82% from the handbook; startup log shows `Ingested N handbook chunks` |
-| 5 | `/assistant` with the "earliest free slot" goal | Several tool calls in the DEBUG log, then a booking |
+| Bonus (not in the live session) | `/assistant` with the "free slot in the Cloud Lab after lunch" goal (also on port 8081 with the `agent` profile) | `listFreeSlots`, then `bookSlot` in the DEBUG log, and `>>> TOOL EXECUTED` in the console. `llama3.2` is unreliable here; `qwen2.5:7b` (`mvn spring-boot:run -Dspring-boot.run.profiles=agent`, needs `ollama pull qwen2.5:7b`) is better but not perfect |
 
 For demos 4 and 5, temporarily set `logging.level.org.springframework.ai: DEBUG` to see prompts and tool calls, then set it back to INFO.
 
@@ -29,7 +29,7 @@ Small local models are sometimes unreliable with tools and JSON. If a demo fails
 
 ## Code-along exercises
 
-`EXERCISES.md` has one small change per demo that students make live in Codespaces. After the demos work, apply each exercise on a scratch copy or branch, check it works, then undo it, so `main` stays at the starting point students begin from. Report any exercise that fails.
+`EXERCISES.md` has four small changes (after Demos 1 to 4) that students make live in Codespaces, plus a bonus goal for later. After the demos work, apply each exercise on a scratch copy or branch, check it works, then undo it, so `main` stays at the starting point students begin from. Report any exercise that fails.
 
 ## Local setup
 

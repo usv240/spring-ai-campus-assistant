@@ -50,7 +50,7 @@ public class AiConfig {
                                      @Value("classpath:docs/course-handbook.md") Resource handbook) {
         return args -> {
             List<Document> documents = new TextReader(handbook).get();
-            List<Document> chunks = new TokenTextSplitter().apply(documents);
+            List<Document> chunks = TokenTextSplitter.builder().withChunkSize(100).build().apply(documents);
             vectorStore.add(chunks);
             System.out.println("Ingested " + chunks.size() + " handbook chunks into the vector store");
         };

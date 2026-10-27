@@ -1,0 +1,12 @@
+# Second instance just for Demo 5 (the agent): a bigger model that is better at tool calls.
+# Run it next to the normal app:
+#   ollama pull qwen2.5:7b
+#   mvn spring-boot:run -Dspring-boot.run.profiles=agent
+server:
+  port: 8081
+
+spring:
+  ai:
+    ollama:
+      chat:
+        model: qwen2.5:7b

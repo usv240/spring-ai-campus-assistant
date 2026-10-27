@@ -2,7 +2,7 @@
 
 The code from my guest lecture **"Building AI-Powered Applications with Java and Spring AI"** at VIT Vellore (SCORE), 28 October 2026.
 
-It's one small Spring Boot app that we built up step by step: chat, structured output, memory and tools, RAG, and a small agent.
+It's one small Spring Boot app that we built up step by step: chat, structured output, memory and tools, and RAG. A small agent is there as a bonus.
 
 - **Code-along exercises:** [EXERCISES.md](EXERCISES.md), one small change after each demo
 - **Session notes:** [NOTES.md](NOTES.md), everything from the talk in plain words
@@ -46,7 +46,7 @@ Less than 8 GB of RAM? Use the smaller model: `ollama pull llama3.2:1b` and set 
 | 2 | Getting Java objects back | `/study-plan` | `StudyPlanController.java` |
 | 3 | Memory, and letting the AI call Java methods | `/assistant` | `AssistantController.java`, `LabBookingTools.java` |
 | 4 | Answering from your own documents (RAG) | `/ask/no-rag`, `/ask` | `RagController.java`, `AiConfig.java` |
-| 5 | A small agent: give it a goal and it plans the tool calls | `/assistant` with a goal | same as Demo 3 |
+| Bonus | A small agent: give it a goal and it plans the tool calls (not covered live, small models are unreliable at this) | `/assistant` with a goal | same as Demo 3 |
 
 Every request is ready to click in `requests.http`.
 

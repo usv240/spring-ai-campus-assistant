@@ -47,15 +47,9 @@ Restart and send the `/study-plan` request. The model now fills in `difficulty` 
 
 ---
 
-## 3. After the prompting part: fix a vague prompt
+## 3. After Demo 3: write your own tool
 
-No restart needed. In `requests.http`, find the **Prompting - vague** request and rewrite the message to say who it’s for, what you want, the format, and what to do when unsure. Send it and compare with the vague one.
-
----
-
-## 4. After Demo 3: write your own tool
-
-Open `LabBookingTools.java`. Find the line `// EXERCISE 4` and paste this under it:
+Open `LabBookingTools.java`. Find the line `// EXERCISE 3` and paste this under it:
 
 ```java
 @Tool(description = "Cancel a lab booking and free the slot again")
@@ -83,7 +77,7 @@ Watch the terminal for `TOOL EXECUTED: cancelled`. You just gave the AI a new ab
 
 ---
 
-## 5. After Demo 4: teach it something new
+## 4. After Demo 4: teach it something new
 
 Open `src/main/resources/docs/course-handbook.md` and add this at the end (or write your own section):
 
@@ -103,15 +97,23 @@ It answers from your new section. Now try `/ask/no-rag` with the same question a
 
 ---
 
-## 6. After Demo 5: give it your own goal
+## Bonus, for later: give it a goal of your own
 
-Send a goal of your own to the assistant, for example:
+Not part of the live session. Try it on your own time. Send a goal of your own to the assistant, for example:
 
 ```
-GET http://localhost:8080/assistant?user=22BIT0042&message=Find me any free slot in the Cloud Lab after lunch and book it. My reg no is 22BIT0042.
+GET http://localhost:8080/assistant?user=22BIT0042&message=Book the Cloud Lab at 3 PM for me. My reg no is 22BIT0042.
 ```
 
-Did it check the slots before booking? If you did exercise 4, try: “Book the AI Lab at 4 PM, then cancel it and book 11 AM instead.”
+Now look at the terminal, not the chat reply. `TOOL EXECUTED` shows what really happened. Small models sometimes say “booked” when nothing was booked, or “failed” when it worked, so trust the terminal.
+
+If you did exercise 3, give it several steps in one goal:
+
+```
+GET http://localhost:8080/assistant?user=22BIT0042&message=My reg no is 22BIT0042. Book the AI Lab at 4 PM, then cancel it and book 11 AM instead.
+```
+
+Does the terminal show all three steps (booked 16:00, cancelled, booked 11:00)? Does the reply match?
 
 ---
 

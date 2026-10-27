@@ -21,6 +21,13 @@ public class AssistantController {
     public AssistantController(ChatClient chatClient, ChatMemory chatMemory, LabBookingTools labTools) {
         this.labTools = labTools;
         this.chatClient = chatClient.mutate()
+                .defaultSystem("""
+                        You are Campus Assistant. You can book lab slots.
+                        The labs are AI Lab, Cloud Lab and IoT Lab.
+                        Before booking, check the free slots with listFreeSlots.
+                        Only say a slot is booked if bookSlot returned a confirmation id.
+                        If bookSlot returned an error, say the booking failed and offer the free slots.
+                        """)
                 .defaultAdvisors(MessageChatMemoryAdvisor.builder(chatMemory).build())
                 .build();
     }
