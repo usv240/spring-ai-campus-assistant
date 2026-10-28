@@ -22,7 +22,8 @@ Do this in the break. It takes about 5 minutes the first time.
    mvn spring-boot:run
    ```
    Wait until you see a line saying `Started CampusAiApplication`.
-4. Open the file `requests.http` (in the file list on the left). Click **Send Request** just above the first `GET` line. If an answer appears on the right, you're ready.
+4. Open the file `requests.http` (in the file list on the left). Click **Send Request** just above the first `GET` line. **Click once only.** The bottom bar says "Waiting..." while the AI works.
+5. **The very first answer takes about 3 minutes**, because the AI is loading. That is normal. Don't click again. The answer opens in a new tab on the right. After that first one, answers take 5 to 30 seconds.
 
 **How to restart after a change:** click in the terminal, press `Ctrl+C`, press the Up arrow, press Enter. It takes about 20 seconds.
 

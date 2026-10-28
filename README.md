@@ -10,6 +10,7 @@ The code from my guest lecture **"Building AI-Powered Applications with Java and
 
 ## Links
 
+- **[STUDENT-GUIDE.pdf](STUDENT-GUIDE.pdf):** step-by-step setup guide with screenshots
 - **[EXERCISES.md](EXERCISES.md):** four small changes to the app, step by step
 - **[SOLUTIONS.md](SOLUTIONS.md):** the finished code for each exercise
 - **[NOTES.md](NOTES.md):** everything from the talk in plain words, with a glossary
