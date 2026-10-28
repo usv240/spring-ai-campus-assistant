@@ -64,7 +64,7 @@ Less than 8 GB of RAM? Use the smaller model: `ollama pull llama3.2:1b` and set 
 
 Every request is ready to click in `requests.http`.
 
-Tip: set `logging.level.org.springframework.ai: DEBUG` in `application.yml` to see the full prompts, tool calls and the handbook pieces that get sent to the model.
+Tip: set `logging.level.org.springframework.ai: DEBUG` in `application.yml` to see every tool call the AI makes (look for `Executing tool call`). It does not print the full prompts.
 
 ## Use a cloud model instead (optional)
 

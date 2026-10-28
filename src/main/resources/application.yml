@@ -18,5 +18,5 @@ spring:
 
 logging:
   level:
-    # Flip to DEBUG during the lecture to show prompts, tool calls and advisor flow
+    # Flip to DEBUG to see every tool call the AI makes (look for "Executing tool call")
     org.springframework.ai: INFO

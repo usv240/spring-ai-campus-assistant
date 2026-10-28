@@ -23,7 +23,7 @@ Run each request in `requests.http` with the app running.
 | 4 | `/ask/no-rag`, `/ask` | `/ask` mentions 82% from the handbook; startup log shows `Ingested N handbook chunks` |
 | Bonus (not in the live session) | `/assistant` with the "free slot in the Cloud Lab after lunch" goal (also on port 8081 with the `agent` profile) | `listFreeSlots`, then `bookSlot` in the DEBUG log, and `>>> TOOL EXECUTED` in the console. `llama3.2` is unreliable here; `qwen2.5:7b` (`mvn spring-boot:run -Dspring-boot.run.profiles=agent`, needs `ollama pull qwen2.5:7b`) is better but not perfect |
 
-For demos 4 and 5, temporarily set `logging.level.org.springframework.ai: DEBUG` to see prompts and tool calls, then set it back to INFO.
+For the tool demos, temporarily set `logging.level.org.springframework.ai: DEBUG` to see tool calls (`Executing tool call`), then set it back to INFO. DEBUG does not print full prompts.
 
 Small local models are sometimes unreliable with tools and JSON. If a demo fails only because of the model's answer (not an exception), note it rather than rewriting the code.
 

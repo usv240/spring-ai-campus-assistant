@@ -87,6 +87,37 @@ GET http://localhost:8080/ask?question=Until when is the canteen open during exa
 GET http://localhost:8080/ask/no-rag?question=Until when is the canteen open during exams?
 
 
+################ EXTRA PRACTICE (Exercises 5 to 10) ################
+
+### Extra 5: temperature test
+# Send this 3 times at temperature 0.1, then 3 times at 1.2. Low gives the same slogan, high gives different ones.
+GET http://localhost:8080/chat?message=Write a one-line slogan for our college canteen.
+
+### Extra 6: new lab (message 1)
+# After you add the Robotics Lab, ask which of its slots are free.
+GET http://localhost:8080/assistant?user=21BCE1234&message=My reg no is 21BCE1234. Which Robotics Lab slots are free?
+
+### Extra 6: new lab (message 2)
+# Books one of the Robotics Lab slots. Watch the terminal for TOOL EXECUTED.
+GET http://localhost:8080/assistant?user=21BCE1234&message=Book the 12:00 one for me
+
+### Extra 8: quiz maker
+# After you add QuizController, this returns a list of 3 quiz questions as neat data.
+GET http://localhost:8080/quiz?topic=Java streams&count=3
+
+### Extra 9: second document
+# After you add hostel-rules.md, the AI can answer from it too (10 PM).
+GET http://localhost:8080/ask?question=What time do hostel gates close for first-year students?
+
+### Extra 10: let Java say no (invalid reg no)
+# After you add the check, this must fail, and the terminal must NOT show TOOL EXECUTED.
+GET http://localhost:8080/assistant?user=22BIT0042&message=Book the AI Lab at 4 PM. My reg no is hello.
+
+### Extra 10: let Java say no (valid reg no)
+# A valid reg no, so the booking goes through.
+GET http://localhost:8080/assistant?user=22BIT0042&message=Book the AI Lab at 4 PM. My reg no is 22BIT0042.
+
+
 ################ TALK: WRITING GOOD PROMPTS (no exercise) ################
 
 ### Prompting: a vague prompt
