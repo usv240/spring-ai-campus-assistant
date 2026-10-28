@@ -108,7 +108,7 @@ In our code: `RagController.java` and `AiConfig.java`.
 
 # What we built
 
-One small Spring Boot app called **Campus Assistant**. We built it in four steps, and you changed it yourself in the exercises.
+One small Spring Boot app called **Campus Assistant**. We built it in four steps, and you changed it yourself in the exercises (there are six more extra ones in EXERCISES.md).
 
 | Step | What it does | Try it | Code |
 |---|---|---|---|
@@ -123,6 +123,7 @@ One small Spring Boot app called **Campus Assistant**. We built it in four steps
 | 2 | Add a `difficulty` field to the study plan |
 | 3 | Write a `cancelBooking` tool |
 | 4 | Add a Canteen section to the handbook |
+| 5 to 10 | Extra practice: temperature, a new lab, tool logs, a quiz maker, a second document, a Java check that says no |
 
 Steps are in [EXERCISES.md](EXERCISES.md) and the finished code is in [SOLUTIONS.md](SOLUTIONS.md). There is also a small bonus: giving the AI a goal and letting it plan the steps.
 

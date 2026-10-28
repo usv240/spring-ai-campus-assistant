@@ -1,6 +1,6 @@
 # Exercises
 
-Four small changes to the app. You don't need to know much Java. Every step says exactly what to click and what to paste.
+Ten small changes to the app: four core exercises, then six for extra practice. You don't need to know much Java. Every step says exactly what to click and what to paste.
 
 **Fell behind or stuck?** That's fine. Watch the screen and come back to this later. Every exercise has a "Stuck?" tip, and the finished code is in [SOLUTIONS.md](SOLUTIONS.md).
 
